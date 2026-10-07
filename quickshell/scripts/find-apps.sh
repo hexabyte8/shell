@@ -23,7 +23,9 @@ WHITELIST=(
     "powermenu.desktop"
 )
 
-# Search paths for .desktop files (local first so overrides work)
+# Search paths for .desktop files (local first so overrides work).
+#
+# Distro-specific defaults (covers FHS distros):
 SEARCH_PATHS=(
     "$HOME/.local/share/applications"
     "$HOME/.local/share/flatpak/exports/share/applications"
@@ -31,6 +33,17 @@ SEARCH_PATHS=(
     "/usr/local/share/applications"
     "/usr/share/applications"
 )
+
+# Also walk $XDG_DATA_DIRS (and $XDG_DATA_HOME), appending /applications to
+# each entry. This is required on NixOS, where desktop files live under
+# Nix store paths such as /run/current-system/sw/share/applications
+# (system packages) and /etc/profiles/per-user/$USER/share/applications
+# (home-manager packages) rather than /usr/share/applications.
+IFS=':' read -ra _xdg_dirs <<< "${XDG_DATA_DIRS}:${XDG_DATA_HOME:-$HOME/.local/share}"
+for _dir in "${_xdg_dirs[@]}"; do
+    [ -z "$_dir" ] && continue
+    SEARCH_PATHS+=("$_dir/applications")
+done
 
 # Function to find icon path
 find_icon() {
