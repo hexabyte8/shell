@@ -49,8 +49,6 @@ Item {
     // from the old value during the reward.
     property real shownXp: Services.LockStats.xp
     readonly property int shownLevel: Services.LockStats.levelFor(shownXp)
-    readonly property int levelFloor: Services.LockStats.xpForLevel(shownLevel)
-    readonly property int levelCeil: Services.LockStats.xpForLevel(shownLevel + 1)
     property bool rewarding: false
     property int _seenLevel: 0
 
@@ -780,42 +778,6 @@ Item {
                         font.family: Neon.logo
                         font.pixelSize: 20 * ice.sc
                         color: Neon.ink
-                    }
-                }
-
-                Label {
-                    text: "STREET CRED " + ice.shownLevel + "  ·  " + Services.LockStats.rankFor(ice.shownLevel)
-                    color: Neon.a
-                }
-
-                Row {
-                    id: credRow
-                    spacing: 8 * ice.sc
-
-                    readonly property real progress: Math.max(0, Math.min(1, (ice.shownXp - ice.levelFloor) / Math.max(1, ice.levelCeil - ice.levelFloor)))
-
-                    Row {
-                        anchors.verticalCenter: parent.verticalCenter
-                        spacing: 2 * ice.sc
-
-                        Repeater {
-                            model: 20
-
-                            Rectangle {
-                                required property int index
-                                width: 9 * ice.sc
-                                height: 6 * ice.sc
-                                color: (index + 0.5) / 20 <= credRow.progress ? Neon.a : Neon.alpha(Neon.ink, 0.15)
-                            }
-                        }
-                    }
-
-                    Text {
-                        anchors.verticalCenter: parent.verticalCenter
-                        text: Math.floor(ice.shownXp - ice.levelFloor) + " / " + (ice.levelCeil - ice.levelFloor)
-                        font.family: Neon.mono
-                        font.pixelSize: 11 * ice.sc
-                        color: Neon.inkDim
                     }
                 }
 

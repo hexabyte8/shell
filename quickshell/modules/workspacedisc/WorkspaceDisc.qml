@@ -76,6 +76,25 @@ Item {
     property bool _hoveredExpanded: false
     readonly property bool expanded: root.forceExpanded || root._hoveredExpanded
 
+    // Only render the disc briefly after the active workspace changes (or
+    // while hovered/expanded); otherwise it stays fully transparent so it
+    // doesn't permanently overlap other corner content. The hover area is
+    // still live while invisible, so mousing into the corner reveals it.
+    property bool _recentlyChanged: false
+    opacity: (root.expanded || root._recentlyChanged) ? 1.0 : 0.0
+    Behavior on opacity { NumberAnimation { duration: Anim.slow; easing.type: Easing.InOutCubic } }
+
+    Timer {
+        id: activityTimer
+        interval: 1500
+        onTriggered: root._recentlyChanged = false
+    }
+
+    onActiveIndexChanged: {
+        root._recentlyChanged = true
+        activityTimer.restart()
+    }
+
     readonly property real discRotation: disc.rotation
 
     readonly property real discCX: {
