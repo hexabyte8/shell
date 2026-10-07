@@ -148,15 +148,15 @@ Singleton {
             icon: "location_city",
             lockTheme: "cyberpunk",
             tone: "neon",
-            description: "A rain-slick city at night: your wallpaper's colours pushed to glowing neon, windows edged in a neon duotone, cut-corner tags on the bar, rain and a katakana sign over the wallpaper, your street cred, and a glitching neon-sign clock.",
-            hypr: { rounding: 0, range: 26, power: 2, glow: "accent", glowAlpha: "80", inactive: "000000aa", dim: 0.12, border: { active: ["accent", "accent2"], angle: 135, inactive: "background", inactiveAlpha: "cc" } },
+            description: "A rain-slick city at night: your wallpaper's colours pushed to glowing neon, windows with a subtle accent-coloured edge, cut-corner tags on the bar, rain and a katakana sign over the wallpaper, your netrunner handle, and a glitching neon-sign clock.",
+            hypr: { rounding: 0, range: 8, power: 1, shadow: "00000066", inactive: "00000044", dim: 0.08, border: { active: ["accent"], angle: 45, inactive: "background", inactiveAlpha: "cc" } },
             bar: { shape: "neon", font: "Fragile Bombers", uiFont: "Rubik", weight: Font.Normal, sizeDelta: 2, letterSpacing: 0.6, border: 1, borderRole: "accent", borderAlpha: 0.7 },
             effects: {
                 subtle: "Neon split-toning (your second neon in the shadows), a noir vignette and a hint of chromatic aberration at the screen edges.",
                 strong: "Deeper split-toning, stronger aberration and a fine neon film grain."
             },
             changes: [
-                { icon: "crop_square", text: "Square windows edged in a neon duotone; the rest sink into the dark" },
+                { icon: "crop_square", text: "Square windows with a subtle accent-coloured border; the rest sink into the dark" },
                 { icon: "sell", text: "Cut-corner neon tags with condensed type on the bar" },
                 { icon: "grain", text: "Rain, city haze and a katakana neon sign over the wallpaper" },
                 { icon: "schedule", text: "A glitching neon-sign clock" }

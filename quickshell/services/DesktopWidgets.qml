@@ -18,7 +18,7 @@ Singleton {
         { id: "clock", name: "Clock", icon: "schedule", description: "The theme's own clock face", x: 0.03, y: 0.08 },
         { id: "music", name: "Music player", icon: "music_note", description: "Now playing, with controls", x: 0.97, y: 0.08 },
         { id: "sysmon", name: "System monitor", icon: "monitoring", description: "CPU, memory, temperature and disk", x: 0.97, y: 0.52 },
-        { id: "quote", name: "Dad joke", icon: "sentiment_very_satisfied", description: "A fresh joke every ten minutes", x: 0.03, y: 0.98 },
+        { id: "quote", name: "Headlines", icon: "sentiment_very_satisfied", description: "A fresh Hacker News headline every ten minutes", x: 0.03, y: 0.98 },
         { id: "cava", name: "Visualizer", icon: "graphic_eq", description: "Cava spectrum of what's playing" }
     ]
 
@@ -70,11 +70,13 @@ Singleton {
         CavaWidget.save();
     }
 
-    // ── Dad jokes (the quote widget), fetched only while it's on ────────────
+    // ── Headlines (the quote widget) — a Hacker News top-story title,
+    // fetched only while it's on. Keeps the old joke/refreshJoke names so
+    // QuoteWidget.qml and the widgets list above don't need to change.
     property string joke: ""
 
     function refreshJoke() {
-        jokeProc.running = true;
+        topStoriesProc.running = true;
     }
 
     Timer {
@@ -85,14 +87,40 @@ Singleton {
         onTriggered: root.refreshJoke()
     }
 
+    // Step 1: grab the top-story id list, then pick one of the first 30
+    // and fetch its title.
     Process {
-        id: jokeProc
-        command: ["curl", "-s", "-m", "10", "-H", "Accept: text/plain", "https://icanhazdadjoke.com/"]
+        id: topStoriesProc
+        command: ["curl", "-s", "-m", "10", "https://hacker-news.firebaseio.com/v0/topstories.json"]
         stdout: StdioCollector {
             onStreamFinished: {
-                const t = text.trim();
-                if (t)
-                    root.joke = t;
+                try {
+                    const ids = JSON.parse(text);
+                    if (Array.isArray(ids) && ids.length > 0) {
+                        const pick = ids[Math.floor(Math.random() * Math.min(30, ids.length))];
+                        headlineProc.command = ["curl", "-s", "-m", "10", "https://hacker-news.firebaseio.com/v0/item/" + pick + ".json"];
+                        headlineProc.running = true;
+                    }
+                } catch (e) {
+                    // leave the previous headline up rather than clearing it
+                }
+            }
+        }
+    }
+
+    // Step 2: fetch the picked story's title.
+    Process {
+        id: headlineProc
+        command: []
+        stdout: StdioCollector {
+            onStreamFinished: {
+                try {
+                    const item = JSON.parse(text);
+                    if (item && item.title)
+                        root.joke = item.title;
+                } catch (e) {
+                    // ignore malformed response
+                }
             }
         }
     }

@@ -4,8 +4,8 @@ import qs.colors
 import qs.modules.lock
 import qs.services as Services
 
-// A dad joke on the desktop (fetched by services/DesktopWidgets), in the
-// look of the desktop theme. The arrow fetches another.
+// A Hacker News headline on the desktop (fetched by services/DesktopWidgets),
+// in the look of the desktop theme. The arrow fetches another.
 WidgetFrame {
     id: root
 

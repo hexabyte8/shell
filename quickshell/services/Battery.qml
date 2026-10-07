@@ -75,17 +75,36 @@ Item {
         return minutes + "m";
     }
 
-    // Read sysfs directly rather than spawning sh + cat every poll.
+    // Read sysfs directly rather than spawning sh + cat every poll. The
+    // battery's sysfs name isn't always BAT0 (e.g. this is BAT1 here), so
+    // discover it once at startup instead of hardcoding it — with
+    // printErrors disabled a wrong hardcoded name silently stays at 0%
+    // forever rather than erroring.
+    Process {
+        id: findBattery
+        command: ["bash", "-c", "ls -d /sys/class/power_supply/BAT* 2>/dev/null | head -1"]
+        running: true
+        stdout: StdioCollector {
+            onStreamFinished: {
+                const dir = text.trim();
+                if (!dir)
+                    return;
+                capacityFile.path = dir + "/capacity";
+                statusFile.path = dir + "/status";
+                capacityFile.reload();
+                statusFile.reload();
+            }
+        }
+    }
+
     FileView {
         id: capacityFile
-        path: "/sys/class/power_supply/BAT0/capacity"
         printErrors: false
         onLoaded: root.percentage = parseInt(text()) || 0
     }
 
     FileView {
         id: statusFile
-        path: "/sys/class/power_supply/BAT0/status"
         printErrors: false
         onLoaded: root.charging = text().trim() === "Charging"
     }

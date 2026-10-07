@@ -7,20 +7,15 @@ import qs.services as Services
 
 // Neon Noir desktop theme, over the wallpaper: a noir shade with neon
 // spilling in from the sides, city haze and still rain (desktop_neon
-// shader), a katakana neon sign at the left edge and your street cred bottom
-// right. Static once drawn: the tubes stutter on as it switches on. See
-// ThemeLayer.
+// shader), a katakana neon sign at the left edge and your netrunner handle
+// bottom right. Static once drawn: the tubes stutter on as it switches on.
+// See ThemeLayer.
 Item {
     id: root
 
     property real boot: 1
     property date now: new Date()
     property real pxScale: 1
-
-    readonly property int level: Services.LockStats.level
-    readonly property int floorXp: Services.LockStats.xpForLevel(level)
-    readonly property int ceilXp: Services.LockStats.xpForLevel(level + 1)
-    readonly property real progress: Math.max(0, Math.min(1, (Services.LockStats.xp - floorXp) / Math.max(1, ceilXp - floorXp)))
 
     // A neon tube doesn't fade in, it stutters on: `boot` through from..to
     // as a flicker ending lit.
@@ -118,7 +113,7 @@ Item {
         }
     }
 
-    // Street cred, bottom right (lock screen progression).
+    // Netrunner handle, bottom right.
     Column {
         anchors.right: parent.right
         anchors.bottom: parent.bottom
@@ -146,45 +141,6 @@ Item {
                 font.family: Neon.logo
                 font.pixelSize: 17
                 color: Neon.ink
-            }
-        }
-
-        Text {
-            anchors.right: parent.right
-            text: "STREET CRED " + root.level + "  //  " + Services.LockStats.rank
-            font.family: Neon.ui
-            font.pixelSize: 16
-            font.letterSpacing: 2
-            color: Neon.a
-        }
-
-        Row {
-            anchors.right: parent.right
-            spacing: 8
-
-            Row {
-                anchors.verticalCenter: parent.verticalCenter
-                spacing: 2
-
-                Repeater {
-                    model: 18
-
-                    Rectangle {
-                        required property int index
-                        width: 7
-                        height: 5
-                        color: (index + 0.5) / 18 <= root.progress ? Neon.a : Neon.alpha(Neon.ink, 0.15)
-                    }
-                }
-            }
-
-            Text {
-                anchors.verticalCenter: parent.verticalCenter
-                text: Services.LockStats.xp.toLocaleString(Qt.locale(), "f", 0) + " XP"
-                font.family: Neon.mono
-                font.pixelSize: 11
-                font.letterSpacing: 1
-                color: Neon.alpha(Neon.ink, 0.7)
             }
         }
     }

@@ -12,7 +12,12 @@ Item {
     property bool opened: true
 
     width: 400
-    height: 120
+    // Was a hardcoded 120 — far smaller than the actual content (album art
+    // row, optional player-switcher row, slider/time row, and the optional
+    // 100px lyrics/cava panel when isSpotify), which forced everything into
+    // too little vertical space and overlapped. Size to content instead.
+    implicitHeight: contentColumn.implicitHeight + 32
+    height: implicitHeight
 
     Behavior on y {
         NumberAnimation {
@@ -36,6 +41,7 @@ Item {
         color: Colors.background
 
         ColumnLayout {
+            id: contentColumn
             anchors.fill: parent
             anchors.margins: 16
             spacing: 10
