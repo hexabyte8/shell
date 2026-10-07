@@ -1,13 +1,5 @@
 [
   {
-    "text": "qs ipc call aikiraChat changeVisible",
-    "subtext": "Toggle Aikira Chat"
-  },
-  {
-    "text": "qs ipc call animePlayer toggle",
-    "subtext": "Toggle Anime Player"
-  },
-  {
     "text": "qs ipc call avatarPicker toggle",
     "subtext": "Toggle Avatar Picker · SUPER+A"
   },
@@ -96,10 +88,6 @@
     "subtext": "Toggle Lockscreen · ALT+SHIFT+H"
   },
   {
-    "text": "qs ipc call mangaReader toggle",
-    "subtext": "Toggle Manga Reader"
-  },
-  {
     "text": "qs ipc call mediaPanel toggle",
     "subtext": "Toggle Media Panel"
   },
@@ -110,10 +98,6 @@
   {
     "text": "qs ipc call notepad toggle",
     "subtext": "Toggle Notepad · SUPER+N"
-  },
-  {
-    "text": "qs ipc call novelReader toggle",
-    "subtext": "Toggle Novel Reader"
   },
   {
     "text": "qs ipc call ollamaChat changeVisible",

@@ -15,13 +15,9 @@ import Quickshell.Wayland
 import Quickshell.Hyprland
 import qs.modules.launcher
 import qs.modules.wallpaper
-import qs.modules.manga
-import qs.modules.novel
-import qs.modules.anime
 import qs.modules.workspacedisc
 import qs.modules.expose
 import qs.modules.cava
-import qs.aikira
 import qs.modules.notes
 import qs.modules.clipboard
 import qs.modules.notepad
@@ -143,10 +139,6 @@ ShellRoot {
             || wallpaperLoader.active
             || controlCenterLoader.active
             || chatLoader.active
-            || (mangaLoader.item !== null && mangaLoader.item.visible)
-            || (novelLoader.item !== null && novelLoader.item.visible)
-            || (animeLoader.item !== null && animeLoader.item.visible)
-            || aikiraLoader.active
             || clipboardLoader.active
             || notepad.visible
             || powerMenu.visible
@@ -243,53 +235,6 @@ ShellRoot {
                 }
                 focus: true
             }
-            Loader {
-                active: false
-                id: mangaLoader
-                anchors {
-                    left: parent.left
-                    top: parent.top
-                    bottom: parent.bottom
-                }
-                sourceComponent: MangaReader{
-                    id: mangaReader
-                }
-            }
-            Loader {
-                active: false
-                id: novelLoader
-                anchors {
-                    right: parent.right
-                    top: parent.top
-                    bottom: parent.bottom
-                }
-                sourceComponent: NovelReader{
-                    id: novelReaderReader
-                }
-            }
-            Loader {
-                active: false
-                id: animeLoader
-                anchors {
-                    left: parent.left
-                    top: parent.top
-                    bottom: parent.bottom
-                }
-                sourceComponent: AnimePanel{
-                    id: animePlayer
-                }
-            }
-
-            Loader {
-                active: false
-                id: aikiraLoader
-                anchors.centerIn: parent
-                sourceComponent: Aikira {
-                    id: aikiraChat
-                }
-                focus: true
-            }
-
             // Built for each opening (the emoji and kaomoji lists, the history
             // and its thumbnails stayed in memory behind the closed panel), on
             // the tab it was last left on.
@@ -358,18 +303,6 @@ ShellRoot {
             Region{
                 item: chatLoader.active ? chatLoader : null
             }
-            Region{
-                item: mangaLoader.item && mangaLoader.item.visible ? mangaLoader.item : null
-            }
-            Region{
-                item: novelLoader.item && novelLoader.item.visible ? novelLoader.item : null
-            }
-            Region{
-                item: animeLoader.item && animeLoader.item.visible ? animeLoader.item : null
-            }
-            Region {
-                item: aikiraLoader.active ? aikiraLoader : null
-            }
             Region {
                 item: clipboardLoader.item && clipboardLoader.item.visible ? clipboardLoader.item : null
             }
@@ -428,10 +361,6 @@ ShellRoot {
             || (wallpaperLoader.item !== null && wallpaperLoader.item.visible)
             || (controlCenterLoader.item !== null && controlCenterLoader.item.visible)
             || chatLoader.active
-            || (mangaLoader.item !== null && mangaLoader.item.visible)
-            || (novelLoader.item !== null && novelLoader.item.visible)
-            || (animeLoader.item !== null && animeLoader.item.visible)
-            || aikiraLoader.active
             || (clipboardLoader.item !== null && clipboardLoader.item.visible)
             || notepad.visible
             || powerMenu.visible
@@ -483,54 +412,6 @@ ShellRoot {
         function onVisibleChanged() {
             if (chatLoader.item && !chatLoader.item.visible) {
                 closeChatTimer.start()
-            }
-        }
-    }
-
-    Timer {
-        id: closeMangaTimer
-        interval: 600
-        // unless it was reopened or minimized in the meantime
-        onTriggered: if (!mangaLoader.item?.visible && !mangaLoader.item?.minimized) mangaLoader.active = false
-    }
-
-    Connections {
-        target: mangaLoader.item
-        function onVisibleChanged() {
-            if (mangaLoader.item && !mangaLoader.item.visible && !mangaLoader.item.minimized) {
-                closeMangaTimer.start()
-            }
-        }
-    }
-
-    Timer {
-        id: closeNovelTimer
-        interval: 600
-        // unless it was reopened or minimized in the meantime
-        onTriggered: if (!novelLoader.item?.visible && !novelLoader.item?.minimized) novelLoader.active = false
-    }
-
-    Connections {
-        target: novelLoader.item
-        function onVisibleChanged() {
-            if (novelLoader.item && !novelLoader.item.visible && !novelLoader.item.minimized) {
-                closeNovelTimer.start()
-            }
-        }
-    }
-
-    Timer {
-        id: closeAnimeTimer
-        interval: 600
-        // unless it was reopened or minimized in the meantime
-        onTriggered: if (!animeLoader.item?.visible && !animeLoader.item?.minimized) animeLoader.active = false
-    }
-
-    Connections {
-        target: animeLoader.item
-        function onVisibleChanged() {
-            if (animeLoader.item && !animeLoader.item.visible && !animeLoader.item.minimized) {
-                closeAnimeTimer.start()
             }
         }
     }
@@ -606,57 +487,6 @@ ShellRoot {
                 mediaPanelLoader.item.opened = true
             } else {
                 mediaPanelLoader.item.opened = !mediaPanelLoader.item.opened
-            }
-        }
-    }
-
-    IpcHandler {
-        target: "mangaReader"
-
-        function toggle(): void {
-            if (!mangaLoader.active) {
-                mangaLoader.active = true
-                mangaLoader.item.visible = true
-            } else if (mangaLoader.item.visible) {
-                mangaLoader.item.visible = false
-            } else {
-                // restoring a minimized panel; closing it next time unloads it
-                mangaLoader.item.minimized = false
-                mangaLoader.item.visible = true
-            }
-        }
-    }
-
-    IpcHandler {
-        target: "novelReader"
-
-        function toggle(): void {
-            if (!novelLoader.active) {
-                novelLoader.active = true
-                novelLoader.item.visible = true
-            } else if (novelLoader.item.visible) {
-                novelLoader.item.visible = false
-            } else {
-                // restoring a minimized panel; closing it next time unloads it
-                novelLoader.item.minimized = false
-                novelLoader.item.visible = true
-            }
-        }
-    }
-
-    IpcHandler {
-        target: "animePlayer"
-
-        function toggle(): void {
-            if (!animeLoader.active) {
-                animeLoader.active = true
-                animeLoader.item.visible = true
-            } else if (animeLoader.item.visible) {
-                animeLoader.item.visible = false
-            } else {
-                // restoring a minimized panel; closing it next time unloads it
-                animeLoader.item.minimized = false
-                animeLoader.item.visible = true
             }
         }
     }
@@ -922,33 +752,6 @@ ShellRoot {
         }
         function reset(): void {
             Services.CavaWidget.reset()
-        }
-    }
-
-    IpcHandler {
-        target: "aikiraChat"
-        function changeVisible(): void {
-            if (!aikiraLoader.active) {
-                aikiraLoader.active = true
-                aikiraLoader.item.visible = true
-            } else {
-                aikiraLoader.item.visible = !aikiraLoader.item.visible
-            }
-        }
-    }
-
-    Timer {
-        id: closeAikiraTimer
-        interval: 600
-        onTriggered: aikiraLoader.active = false
-    }
-
-    Connections {
-        target: aikiraLoader.item
-        function onVisibleChanged() {
-            if (aikiraLoader.item && !aikiraLoader.item.visible) {
-                closeAikiraTimer.start()
-            }
         }
     }
 

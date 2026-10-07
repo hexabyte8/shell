@@ -254,7 +254,7 @@ Singleton {
         const table = [["wallpaper", "wallpaper"], ["clipboard", "content_paste"], ["notepad", "sticky_note_2"], ["power", "power_settings_new"],
             ["lock", "lock"], ["theme", "palette"], ["network", "wifi"], ["media", "music_note"], ["calendar", "calendar_month"],
             ["launcher", "apps"], ["expose", "view_carousel"], ["cava", "graphic_eq"], ["github", "code"], ["update", "system_update"],
-            ["widget", "widgets"], ["manga", "menu_book"], ["novel", "auto_stories"], ["anime", "movie"], ["chat", "chat"],
+            ["widget", "widgets"], ["chat", "chat"],
             ["avatar", "face"], ["control", "tune"], ["clock", "schedule"], ["system", "monitor_heart"], ["bar", "view_agenda"],
             ["pet", "pets"]];
         for (const [k, icon] of table)

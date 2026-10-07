@@ -1,8 +1,8 @@
 pragma Singleton
 import Quickshell
 
-// Shared XMLHttpRequest helpers for the backend-backed services (Manga, Anime,
-// Novel), which each carried a byte-identical private copy of these.
+// Shared XMLHttpRequest helpers for the backend-backed services, which each
+// carried a byte-identical private copy of these.
 //
 // Every call builds its own request object, so nothing is shared between callers.
 Singleton {
