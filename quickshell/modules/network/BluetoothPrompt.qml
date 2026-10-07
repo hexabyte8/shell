@@ -36,8 +36,8 @@ Card {
         "184e": "LE audio", "184f": "LE audio", "1850": "LE audio", "1853": "LE audio"
     })
     readonly property string service: {
-        const short = /^0000([0-9a-f]{4})-0000-1000-8000-00805f9b34fb$/.exec((request?.uuid ?? "").toLowerCase())
-        return (short && services[short[1]]) || "A Bluetooth service"
+        const match = /^0000([0-9a-f]{4})-0000-1000-8000-00805f9b34fb$/.exec((request?.uuid ?? "").toLowerCase())
+        return (match && services[match[1]]) || "A Bluetooth service"
     }
 
     function submit() {
