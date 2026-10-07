@@ -3,7 +3,6 @@ import Quickshell
 import qs.modules.network
 import qs.modules.control
 import qs.modules.calendar
-import qs.modules.media
 import qs.modules.bar
 import qs.modules.system
 import qs.modules.switcher
@@ -17,7 +16,7 @@ import qs.modules.launcher
 import qs.modules.wallpaper
 import qs.modules.workspacedisc
 import qs.modules.expose
-import qs.modules.cava
+
 import qs.modules.notes
 import qs.modules.clipboard
 import qs.modules.notepad
@@ -47,18 +46,7 @@ ShellRoot {
     DesktopWidgetsLayer {}
     WorkspaceDiscWindow {}
     Expose {}
-    CavaWidget { id: cavaWidget }
     WindowSwitcher{}
-    Visualizer {
-        id: visBottom
-        anchorBottom: true
-        visible: false
-    }
-    Visualizer {
-        id: visTop
-        anchorBottom: false
-        visible: visBottom.visible
-    }
     // Hover strips along the screen edges that open the launcher, the notes
     // drawer and the GitHub popout. Each is a tiny surface of its own, so the
     // full-screen panel surface below can shrink away while no panel is open.
@@ -144,8 +132,7 @@ ShellRoot {
         // layer animation off for this namespace, or the panels would be
         // drawn growing out of the corner as the surface grows.
         WlrLayershell.namespace: "quickshell:panels"
-        readonly property bool needed: mediaPanelLoader.active
-            || ghPopout.visible
+        readonly property bool needed: ghPopout.visible
             || systemPanel.visible
             || updatesPanel.visible
             || networkPanelLoader.active
@@ -181,15 +168,6 @@ ShellRoot {
             width: rootPanel.screenW
             height: rootPanel.screenH
 
-            Loader {
-                id: mediaPanelLoader
-                active: false
-                anchors.horizontalCenter: parent.horizontalCenter
-                sourceComponent: MediaPanel {
-                    id: mediaPanel
-                }
-                focus: true
-            }
             GhPopout {
                 id: ghPopout
                 anchors {
@@ -288,9 +266,6 @@ ShellRoot {
         property bool altHeld: false
 
         mask: Region{
-            Region{
-                item: mediaPanelLoader.active ? mediaPanelLoader : null
-            }
             Region{
                 item: systemPanel
             }
@@ -396,21 +371,6 @@ ShellRoot {
         }
     }
 
-    Connections {
-        target: mediaPanelLoader.item
-        function onOpenedChanged() {
-            if (!mediaPanelLoader.item.opened) {
-                closeTimer.start()
-            }
-        }
-    }
-
-    Timer {
-        id: closeTimer
-        interval: 600
-        onTriggered: mediaPanelLoader.active = false
-    }
-
     Timer {
         id: closeChatTimer
         interval: 600
@@ -489,19 +449,6 @@ ShellRoot {
     }
 
     IpcHandler {
-        target: "mediaPanel"
-
-        function toggle(): void {
-            if (!mediaPanelLoader.active) {
-                mediaPanelLoader.active = true
-                mediaPanelLoader.item.opened = true
-            } else {
-                mediaPanelLoader.item.opened = !mediaPanelLoader.item.opened
-            }
-        }
-    }
-
-    IpcHandler {
         target: "networkPanel"
 
         function changeVisible(tab: string): void {
@@ -550,14 +497,6 @@ ShellRoot {
             } else {
                 chatLoader.item.visible = !chatLoader.item.visible
             }
-        }
-    }
-
-    IpcHandler {
-        target: "visBottom"
-
-        function toggle() {
-            visBottom.visible = !visBottom.visible
         }
     }
 
@@ -749,19 +688,6 @@ ShellRoot {
         }
         function refresh(): void {
             Services.Updates.refresh()
-        }
-    }
-
-    IpcHandler {
-        target: "cavaWidget"
-        function toggle(): void {
-            cavaWidget.toggle()
-        }
-        function edit(): void {
-            cavaWidget.edit()
-        }
-        function reset(): void {
-            Services.CavaWidget.reset()
         }
     }
 }

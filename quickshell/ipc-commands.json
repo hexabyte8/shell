@@ -12,22 +12,6 @@
     "subtext": "Toggle Calendar Window"
   },
   {
-    "text": "qs ipc call cavaPanel toggle",
-    "subtext": "Toggle Cava Panel"
-  },
-  {
-    "text": "qs ipc call cavaWidget edit",
-    "subtext": "Edit Cava Widget · SUPER+T"
-  },
-  {
-    "text": "qs ipc call cavaWidget reset",
-    "subtext": "Reset Cava Widget"
-  },
-  {
-    "text": "qs ipc call cavaWidget toggle",
-    "subtext": "Toggle Cava Widget"
-  },
-  {
     "text": "qs ipc call clipboardManager changeVisible",
     "subtext": "Toggle Clipboard Manager"
   },
@@ -86,10 +70,6 @@
   {
     "text": "qs ipc call lockscreen toggle",
     "subtext": "Toggle Lockscreen · ALT+SHIFT+H"
-  },
-  {
-    "text": "qs ipc call mediaPanel toggle",
-    "subtext": "Toggle Media Panel"
   },
   {
     "text": "qs ipc call networkPanel changeVisible",

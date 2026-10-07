@@ -7,8 +7,7 @@ import QtQuick
 // Desktop widgets (modules/desktopwidgets): which are on and where they sit.
 // A position is stored as a fraction of the free space on the screen
 // (0 = left/top edge, 1 = right/bottom edge), so widgets stay on screen and
-// keep their place across resolutions. The visualizer keeps its own settings
-// (services/CavaWidget.qml); here it is only listed and switched.
+// keep their place across resolutions.
 //
 // Settings: ~/.config/quickshell/desktopwidgets.json.
 Singleton {
@@ -16,31 +15,22 @@ Singleton {
 
     readonly property var widgets: [
         { id: "clock", name: "Clock", icon: "schedule", description: "The theme's own clock face", x: 0.03, y: 0.08 },
-        { id: "music", name: "Music player", icon: "music_note", description: "Now playing, with controls", x: 0.97, y: 0.08 },
         { id: "sysmon", name: "System monitor", icon: "monitoring", description: "CPU, memory, temperature and disk", x: 0.97, y: 0.52 },
-        { id: "quote", name: "Headlines", icon: "sentiment_very_satisfied", description: "A fresh Hacker News headline every ten minutes", x: 0.03, y: 0.98 },
-        { id: "cava", name: "Visualizer", icon: "graphic_eq", description: "Cava spectrum of what's playing" }
+        { id: "quote", name: "Headlines", icon: "sentiment_very_satisfied", description: "A fresh Hacker News headline every ten minutes", x: 0.03, y: 0.98 }
     ]
 
-    readonly property var defaults: ({ clock: true, music: true, sysmon: true, quote: true })
+    readonly property var defaults: ({ clock: true, sysmon: true, quote: true })
 
     function info(id) {
         return widgets.find(w => w.id === id);
     }
 
     function enabled(id) {
-        if (id === "cava")
-            return CavaWidget.enabled;
         const v = adapter.on[id];
         return v === undefined ? (defaults[id] ?? false) : v;
     }
 
     function setEnabled(id, on) {
-        if (id === "cava") {
-            CavaWidget.enabled = on;
-            CavaWidget.save();
-            return;
-        }
         const next = Object.assign({}, adapter.on);
         next[id] = on;
         adapter.on = next;
@@ -65,9 +55,6 @@ Singleton {
 
     function resetPositions() {
         adapter.positions = ({});
-        CavaWidget.posX = 40;
-        CavaWidget.posY = 880;
-        CavaWidget.save();
     }
 
     // ── Headlines (the quote widget) — a Hacker News top-story title,

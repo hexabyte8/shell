@@ -544,11 +544,6 @@ Item {
             }
         }
 
-        MediaPill {
-            id: mediaPill
-            anchors.centerIn: parent
-        }
-
         Row {
             id: rightRow
             anchors.right: parent.right

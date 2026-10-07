@@ -1,21 +1,20 @@
 pragma ComponentBehavior: Bound
 import QtQuick
 import Quickshell
-import qs.colors
 import qs.services as Services
 
 // The desktop widgets for a preview in the Themes panel: each enabled widget
 // at its place on a screen-sized item (the caller scales it), in the look of
 // `themeId`. With `editable` they can be dragged here too, which moves them
-// on the desktop. Widgets are inert here; the visualizer is a still stand-in.
+// on the desktop.
 Item {
     id: root
 
     property string themeId: Services.DesktopTheme.enabled ? Services.DesktopTheme.theme : ""
     property bool editable: false
 
-    readonly property var ids: ["clock", "music", "sysmon", "quote"]
-    readonly property var components: ({ clock: clockC, music: musicC, sysmon: sysmonC, quote: quoteC })
+    readonly property var ids: ["clock", "sysmon", "quote"]
+    readonly property var components: ({ clock: clockC, sysmon: sysmonC, quote: quoteC })
 
     width: Quickshell.screens[0]?.width ?? 1920
     height: Quickshell.screens[0]?.height ?? 1080
@@ -81,51 +80,9 @@ Item {
         }
     }
 
-    // Visualizer stand-in: still bars in its box.
-    Item {
-        id: cava
-        visible: Services.CavaWidget.enabled
-        x: cavaDrag.dragging ? cavaDrag.dragX : Services.CavaWidget.posX
-        y: cavaDrag.dragging ? cavaDrag.dragY : Services.CavaWidget.posY
-        width: Services.CavaWidget.boxWidth
-        height: Services.CavaWidget.boxHeight
-
-        Row {
-            anchors.bottom: parent.bottom
-            spacing: 3
-
-            Repeater {
-                model: 24
-
-                Rectangle {
-                    required property int index
-                    anchors.bottom: parent.bottom
-                    width: (cava.width - 23 * 3) / 24
-                    height: cava.height * (0.2 + 0.75 * Math.abs(Math.sin(index * 0.9) * Math.cos(index * 0.37)))
-                    color: Colors.withAlpha(WidgetStyle.accent(root.themeId), 0.8)
-                }
-            }
-        }
-
-        Draggable {
-            id: cavaDrag
-            target: cava
-            onCommit: (x, y) => {
-                Services.CavaWidget.posX = Math.round(x);
-                Services.CavaWidget.posY = Math.round(y);
-                Services.CavaWidget.save();
-            }
-        }
-    }
-
     Component {
         id: clockC
         ClockWidget { themeId: root.themeId }
-    }
-
-    Component {
-        id: musicC
-        MusicWidget { themeId: root.themeId }
     }
 
     Component {
