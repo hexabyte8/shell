@@ -10,7 +10,6 @@
 
 import QtQuick
 import qs.modules.bar.components
-import qs.modules.pet
 import qs.services as Services
 import qs.colors
 import qs.components
@@ -19,7 +18,6 @@ import qs.components
 // living in an island (a group of 1+ atoms sharing a pill/tray). Islands live in
 // two ordered regions, left and right, driven by the BarLayout service. The
 // center media pill and the right-edge system tray are fixed and never move.
-// The pet (modules/pet) lives in the free stretches between them.
 Item {
     id: topBar
 
@@ -515,19 +513,6 @@ Item {
     // ---- bar content ------------------------------------------------------
     Item {
         anchors.fill: parent
-
-        // Declared first, so it passes behind the islands as it crosses.
-        BarPet {
-            anchors.fill: parent
-            gaps: {
-                const pad = 8;
-                const l = leftRow.x + leftRow.width + pad;
-                const r = rightRow.x - pad;
-                if (!mediaPill.visible)
-                    return [[l, r]];
-                return [[l, mediaPill.x - pad], [mediaPill.x + mediaPill.width + pad, r]];
-            }
-        }
 
         Row {
             id: leftRow

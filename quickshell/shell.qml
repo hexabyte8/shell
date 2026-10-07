@@ -29,7 +29,6 @@ import qs.modules.updates
 import qs.modules.lockthemes
 import qs.modules.desktoptheme
 import qs.modules.desktopwidgets
-import qs.modules.pet
 
 ShellRoot {
     id: root
@@ -120,6 +119,22 @@ ShellRoot {
 
     PanelWindow {
         id: rootPanel
+
+        // Follow the currently focused monitor so popups (launcher, power
+        // menu, clipboard, etc.) always appear where the user is actually
+        // looking, instead of being pinned to whichever screen Quickshell
+        // picked as the default on startup. Quickshell.screens entries and
+        // Hyprland monitors share the same Wayland output `name` (e.g.
+        // "DP-1"), so match on that. Kept reactive (not just updated on
+        // toggle) so the surface is already on the right output by the time
+        // a panel opens.
+        readonly property var focusedScreen: {
+            const mon = Services.Hyprland.focusedMonitor
+            if (!mon)
+                return null
+            return Quickshell.screens.find(s => s.name === mon.name) ?? null
+        }
+        screen: focusedScreen ?? Quickshell.screens[0] ?? null
 
         // Whether any panel is up (or on its way out). While none is, the
         // surface shrinks to a pixel in the corner rather than being unmapped
@@ -380,11 +395,6 @@ ShellRoot {
             id: topBar
         }
     }
-
-    // The bar pet's hub and speech bubble (the pet itself lives in TopBar).
-    // Both are windows only while they're showing.
-    PetHub {}
-    PetBubble {}
 
     Connections {
         target: mediaPanelLoader.item
@@ -752,44 +762,6 @@ ShellRoot {
         }
         function reset(): void {
             Services.CavaWidget.reset()
-        }
-    }
-
-    IpcHandler {
-        target: "pet"
-        function toggle(): void {
-            Services.Pet.toggleHub()
-        }
-        function open(): void {
-            if (!Services.Pet.hubOpen)
-                Services.Pet.toggleHub()
-        }
-        function close(): void {
-            Services.Pet.hubOpen = false
-        }
-        function say(text: string): void {
-            Services.Pet.say(text)
-        }
-        function pat(): void {
-            Services.Pet.pat()
-        }
-        function feed(): void {
-            Services.Pet.feed()
-        }
-        function play(): void {
-            Services.Pet.play()
-        }
-        function nap(): void {
-            Services.Pet.nap()
-        }
-        function wake(): void {
-            Services.Pet.act("wake")
-        }
-        function show(): void {
-            Services.Pet.setShown(true)
-        }
-        function hide(): void {
-            Services.Pet.setShown(false)
         }
     }
 }
