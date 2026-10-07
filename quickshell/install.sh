@@ -73,13 +73,6 @@ THEME_FONTS=(
     "ofl/texturina/Texturina-Italic[opsz,wght].ttf"
 )
 
-# venv path : pip packages (paths are hardcoded in services/{Anime,Manga,Novel}.qml)
-VENVS=(
-    "$HOME/ani-env:flask requests"
-    "$HOME/.venv/manga:curl_cffi requests"
-    "$HOME/novel-env:curl_cffi requests"
-)
-
 info() { printf '\033[1;34m::\033[0m %s\n' "$*"; }
 warn() { printf '\033[1;33m!!\033[0m %s\n' "$*" >&2; }
 die()  { printf '\033[1;31mxx\033[0m %s\n' "$*" >&2; exit 1; }
@@ -279,18 +272,6 @@ check_scale() {
     warn "  monitor = , preferred, auto, 1"
 }
 
-install_venvs() {
-    local entry dir pkgs
-    for entry in "${VENVS[@]}"; do
-        dir=${entry%%:*}
-        pkgs=${entry#*:}
-        info "Setting up venv $dir ($pkgs)"
-        [[ -x $dir/bin/python3 ]] || python3 -m venv "$dir"
-        # shellcheck disable=SC2086
-        "$dir/bin/pip" install --quiet --upgrade $pkgs
-    done
-}
-
 cat <<EOF
 Quickshell config installer
   source:  $SRC_DIR
@@ -307,7 +288,6 @@ install_helpers
 ((HYPR)) && install_hypr
 install_ipc_commands
 configure_github
-((EXTRAS)) && install_venvs
 check_scale
 
 cat <<EOF

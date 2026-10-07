@@ -1,4 +1,3 @@
-import "root:/modules/common"
 import "root:/services"
 import QtQuick
 import Quickshell
